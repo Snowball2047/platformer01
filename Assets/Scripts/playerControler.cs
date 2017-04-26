@@ -20,6 +20,7 @@ public class playerControler : MonoBehaviour {
 	bool doJump = false;
 	bool crouch = false;
 	bool frozen = false;
+	bool fireball = false;
 
     // Use this for initialization
     void Start()
@@ -37,36 +38,43 @@ public class playerControler : MonoBehaviour {
     {
         grounded = Physics2D.OverlapCircle(GroundCheck.position, groundRadius, whatIsGround);
         anim.SetBool("grounded", grounded);
-		float move = Input.GetAxis("Horizontal");
-        float speed = move * maxSpeed;
-		if (upright && ! frozen)
-        {
-            speed = speed / 2;
-        }
-		anim.SetFloat ("speed", Mathf.Abs (move));
 		if (!frozen) {
+			float move = Input.GetAxis ("Horizontal");
+			float speed = move * maxSpeed;
+			if (upright) {
+				speed = speed / 2;
+			}
+			anim.SetFloat ("speed", Mathf.Abs (move));
 			GetComponent<Rigidbody2D> ().velocity = new Vector2 (speed, GetComponent<Rigidbody2D> ().velocity.y);
+			if (speed != 0) {
+				crouch = false;
+			}
+			if (move > 0 && !facingRight) {
+				Flip ();
+			} else if (move < 0 && facingRight) {
+				Flip ();
+			}
+			Crouch ();
+			if (upright && !crouch) {
+				uprightCollider.SetActive (true);
+				quadrupedalCollider.SetActive (false);
+				anim.SetBool ("upright", true);
+			} else if (!crouch) {
+				uprightCollider.SetActive (false);
+				quadrupedalCollider.SetActive (true);
+				anim.SetBool ("upright", false);
+			}
 		}
-		if (speed != 0) {
-			crouch = false;
+		if (fireball) {
+			fireball = false;
+			anim.SetBool ("fireball", false);
+			frozen = false;
 		}
-        if (move > 0 && !facingRight)
-        {
-            Flip();
-        }
-        else if (move < 0 && facingRight)
-        {
-            Flip();
-        }
-		Crouch();
-		if (upright && ! crouch) {
-			uprightCollider.SetActive (true);
-			quadrupedalCollider.SetActive (false);
-			anim.SetBool("upright", true);
-		} else if (! crouch) {
-			uprightCollider.SetActive(false);
-			quadrupedalCollider.SetActive(true);
-			anim.SetBool("upright", false);
+		//nero_fireball
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			fireball = true;
+			anim.SetBool ("fireball", true);
+			frozen = true;
 		}
     }
 
