@@ -81,6 +81,11 @@ public class playerControler : MonoBehaviour {
 
     void Update()
     {
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			fireball = true;
+			anim.SetBool ("fireball", true);
+			frozen = true;
+		}
 		float jump = jumpForce;
 		if (upright) {
 			jump = jump / 3;
@@ -138,7 +143,7 @@ public class playerControler : MonoBehaviour {
     {
 		crouch = false;
 		facingRight = !facingRight;
-        Vector3 theScale = transform.localScale;
+        Vector2 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
 		anim.SetBool("crouch", crouch);
