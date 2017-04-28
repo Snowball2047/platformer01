@@ -82,8 +82,6 @@ public class playerControler : MonoBehaviour {
     {
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			fireball = true;
-			anim.SetBool ("fireball", true);
-			frozen = true;
 		}
 		float jump = jumpForce;
 		if (upright) {
