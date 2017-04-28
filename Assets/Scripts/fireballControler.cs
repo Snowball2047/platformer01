@@ -12,6 +12,7 @@ public class fireballControler : MonoBehaviour {
 	bool fireballCollider = false;
 	public float start = 0f;
 	public float end = 0f;
+	bool fireballAnim = false;
 
 	// Use this for initialization
 	void Start () {
@@ -31,6 +32,9 @@ public class fireballControler : MonoBehaviour {
 			GetComponent<Collider2D> ().enabled = false;
 			fireballCollider = false;
 			fireball = true;
+			GameObject.Find (player).GetComponent<Animator> ().SetBool ("fireball", true);
+			fireballAnim = true;
+			Debug.Log ("Enable");
 
 		}
 
@@ -61,9 +65,15 @@ public class fireballControler : MonoBehaviour {
 			if (transform.position.x > x && !fireballCollider && facingRight) {
 				GetComponent<Collider2D> ().enabled = true;
 				fireballCollider = true;
+				GameObject.Find (player).GetComponent<Animator> ().SetBool ("fireball", false);
+				fireballAnim = false;
+				Debug.Log ("Disable");
 			} else if (transform.position.x < x && !fireballCollider && !facingRight) {
 				GetComponent<Collider2D> ().enabled = true;
 				fireballCollider = true;
+				GameObject.Find (player).GetComponent<Animator> ().SetBool ("fireball", false);
+				fireballAnim = false;
+				Debug.Log ("Disable");
 			}
 		}
 
@@ -72,6 +82,11 @@ public class fireballControler : MonoBehaviour {
 		} else if (transform.position.x > end) {
 			fireball = false;
 		}
+
+		if (fireballCollider) {
+			GameObject.Find (player).GetComponent<Animator> ().SetBool ("fireball", false);
+		}
+
 	}
 
 	void Flip() {

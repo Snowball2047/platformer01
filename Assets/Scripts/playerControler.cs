@@ -65,17 +65,16 @@ public class playerControler : MonoBehaviour {
 				anim.SetBool ("upright", false);
 			}
 		}
-		if (fireball) {
-			fireball = false;
-			anim.SetBool ("fireball", false);
-			frozen = false;
-		}
-		//nero_fireball
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			fireball = true;
-			anim.SetBool ("fireball", true);
-			frozen = true;
-		}
+//		if (fireball) {
+//			fireball = false;
+//			anim.SetBool ("fireball", false);
+//			frozen = false;
+//		}
+//		if (Input.GetKeyDown (KeyCode.Space)) {
+//			fireball = true;
+//			anim.SetBool ("fireball", true);
+//			frozen = true;
+//		}
     }
 
 
