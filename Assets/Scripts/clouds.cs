@@ -4,6 +4,8 @@ using System.Collections;
 public class clouds : MonoBehaviour {
 
 	public float speed = 0.05f;
+
+    //Level bounds
 	public float start = -12f;
 	public float end = 13f;
 

@@ -8,17 +8,24 @@ public class playerControler : MonoBehaviour {
 
     Animator anim;
 
+    //Ground check values
     bool grounded = false;
     public Transform GroundCheck;
     public float groundRadius = 0.2f;
     public LayerMask whatIsGround;
+
+    //Jump
     public float jumpForce = 700f;
-    public bool upright = false;
+    bool doJump = false;
+
+    //Colliders
     GameObject uprightCollider;
     GameObject quadrupedalCollider;
-	GameObject crouchCollider;
-	bool doJump = false;
-	bool crouch = false;
+    GameObject crouchCollider;
+
+    //Player modifiers
+    public bool upright = false;
+    bool crouch = false;
 	bool frozen = false;
 	bool fireball = false;
 
@@ -26,6 +33,8 @@ public class playerControler : MonoBehaviour {
     void Start()
     {
         anim = GetComponent<Animator>();
+
+        //Char colliders
         uprightCollider = transform.Find("uprightCollider").gameObject;
         quadrupedalCollider = transform.Find("quadrupedalCollider").gameObject;
 		crouchCollider = transform.Find ("crouchCollider").gameObject;
@@ -36,25 +45,37 @@ public class playerControler : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate()
     {
+        //Checks if player is on ground
         grounded = Physics2D.OverlapCircle(GroundCheck.position, groundRadius, whatIsGround);
         anim.SetBool("grounded", grounded);
+
+        //Movement of player, does not run if player is frozen
 		if (!frozen) {
 			float move = Input.GetAxis ("Horizontal");
 			float speed = move * maxSpeed;
 			if (upright) {
 				speed = speed / 2;
 			}
-			anim.SetFloat ("speed", Mathf.Abs (move));
+
+            //Moves player
+            anim.SetFloat ("speed", Mathf.Abs (move));
 			GetComponent<Rigidbody2D> ().velocity = new Vector2 (speed, GetComponent<Rigidbody2D> ().velocity.y);
+
+            //Deactivates crouching anim
 			if (speed != 0) {
-				crouch = false;
+                crouch = false;
 			}
-			if (move > 0 && !facingRight) {
+
+            //Flips player on y-axis if movement in opposite direction
+            if (move > 0 && !facingRight) {
 				Flip ();
 			} else if (move < 0 && facingRight) {
 				Flip ();
 			}
+
 			Crouch ();
+
+            //Activates colliders when not crouched
 			if (upright && !crouch) {
 				uprightCollider.SetActive (true);
 				quadrupedalCollider.SetActive (false);
@@ -65,37 +86,36 @@ public class playerControler : MonoBehaviour {
 				anim.SetBool ("upright", false);
 			}
 		}
-//		if (fireball) {
-//			fireball = false;
-//			anim.SetBool ("fireball", false);
-//			frozen = false;
-//		}
-//		if (Input.GetKeyDown (KeyCode.Space)) {
-//			fireball = true;
-//			anim.SetBool ("fireball", true);
-//			frozen = true;
-//		}
     }
 
 
     void Update()
     {
-		if (Input.GetKeyDown (KeyCode.Space)) {
+        //Prompts fireball animation
+        if (Input.GetKeyDown (KeyCode.Space)) {
 			fireball = true;
 		}
+
 		float jump = jumpForce;
+
+        //Sets upright jump force
 		if (upright) {
 			jump = jump / 3;
 			jump = jump * 2;
 		}
+
+        //Requests jump
 		if (Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W)) {
 			doJump = true;
 		} else {
 			doJump = false;
 		}
-		if (grounded && doJump)
+
+        //Performs jump
+        if (grounded && doJump)
         {
-			if (!frozen) {
+            //Checks if frozen
+            if (!frozen) {
 				anim.SetBool ("crouch", crouch);
 				anim.SetBool ("grounded", false);
 				GetComponent<Rigidbody2D> ().AddForce (new Vector2 (0, jump));
@@ -103,6 +123,7 @@ public class playerControler : MonoBehaviour {
 			}
         }
 
+        //Switch between upright and quadrupedal mode
         if (Input.GetKeyDown(KeyCode.F) && anim.GetFloat("speed") < 0.5)
         {
 			if (!frozen) {
@@ -110,24 +131,29 @@ public class playerControler : MonoBehaviour {
 				crouch = false;
 			}
         }
+
+        //Triggers crouch
 		if (Input.GetKeyDown (KeyCode.S) || Input.GetKeyDown (KeyCode.DownArrow)) {
 			if (!frozen) {
 				crouch = true;
 				anim.SetBool ("crouch", crouch);
 			}
 		}
+
 		//Testing triggers shock_hit
 		if (Input.GetKeyDown(KeyCode.T)) {
 			Switch ();
 			anim.SetBool("shock_hit", true);
 			frozen = true;
 		}
+
 		//Testing triggers fire_hit
 		if (Input.GetKeyDown (KeyCode.Y)) {
 			Switch ();
 			anim.SetBool ("fire_hit", true);
 			frozen = true;
 		}
+
 		//Testing triggers freeze
 		if (Input.GetKeyDown (KeyCode.U)) {
 			Switch ();
@@ -136,9 +162,10 @@ public class playerControler : MonoBehaviour {
 		}
     }
 
-    void Flip()
+    //Flips player on y-axis
+    Flip()
     {
-		crouch = false;
+        crouch = false;
 		facingRight = !facingRight;
         Vector2 theScale = transform.localScale;
         theScale.x *= -1;
@@ -146,6 +173,7 @@ public class playerControler : MonoBehaviour {
 		anim.SetBool("crouch", crouch);
     }
 
+    //Switch between upright and quadrupedal mode
     void Switch()
     {
         if(upright)
@@ -159,6 +187,7 @@ public class playerControler : MonoBehaviour {
 		crouch = false;
     }
 
+    //Sets crouch values in Unity to the same as in script
 	void Crouch() {
 		if (crouch) {
 			anim.SetBool ("crouch", true);
