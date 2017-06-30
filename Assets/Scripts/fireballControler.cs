@@ -65,10 +65,11 @@ public class fireballControler : MonoBehaviour {
         
         //Checks if fireball is in the same direction as player when not active
 		if (!fireball) {
+            //TODO Move Flip() to top of statement
 			if (transform.localScale.y > 0 && GameObject.Find (player).transform.localScale.x > 0) {
-                //Wow
+                
 			} else if (transform.localScale.y < 0 && GameObject.Find (player).transform.localScale.x < 0) {
-                //Such empty
+                
 			} else {
 				Flip ();
 			}
